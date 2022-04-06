@@ -1,8 +1,13 @@
 package cmd
 
 import (
+	"encoding/csv"
 	"encoding/json"
 	"fmt"
+	"io"
+	"io/ioutil"
+	"os"
+	"time"
 
 	"github.com/accuknox/observability-client/get"
 	"github.com/accuknox/observability/src/proto/aggregator"
@@ -11,30 +16,80 @@ import (
 
 var sysFilters aggregator.SystemLogsRequest
 var limit int
+var export struct {
+	json bool
+	csv  bool
+}
 
 //sysCmd represents the system command
 var sysCmd = &cobra.Command{
 	Use:   "system",
-	Short: "System commends for get aggregated kubearmor logs",
+	Short: "System commands for get aggregated kubearmor logs",
 	Long:  `System commands give all the aggregated kubearmor logs for observability. `,
-	RunE: func(cm *cobra.Command, args []string) error {
+	RunE: func(cmd *cobra.Command, args []string) error {
 		//Fetch logs
 		sysFilters.Limit = int64(limit)
-		response, err := get.GetSystemLogs(sysFilters)
+		stream, err := get.GetSystemLogs(sysFilters)
 		if err != nil {
 			return err
 		}
-
-		//Check Logs exist
-		if len(response.Logs) == 0 && response.Count == 0 {
-			fmt.Println("No Log Found")
-			return nil
+		var systemLogs []aggregator.SystemLog
+		var count int64
+		for {
+			res, err := stream.Recv()
+			if err == io.EOF {
+				break
+			}
+			if err != nil {
+				return err
+			}
+			if res.Logs != nil {
+				systemLogs = append(systemLogs, *res.Logs)
+			} else {
+				count = res.Count
+				break
+			}
 		}
 		//Show count of logs
 		if sysFilters.Count {
-			fmt.Println("Total Unique Logs : ", response.Count)
+			fmt.Println("Total Unique Logs : ", count)
+			return nil
 		}
-		for _, log := range response.Logs {
+		//Check Logs exist
+		if len(systemLogs) == 0 {
+			fmt.Println("No Log Found")
+			return nil
+		}
+
+		//Convert logs into Json file
+		if export.json {
+			file, _ := json.MarshalIndent(systemLogs, "", "")
+			fileName := "system_log" + time.Now().UTC().Format("2006-01-02 15:04:05") + ".json"
+			_ = ioutil.WriteFile(fileName, file, 0644)
+			return nil
+		}
+		//Convert logs into CSV file
+		if export.csv {
+			fileName := "system_log_" + time.Now().UTC().Format("2006-01-02 15:04:05") + ".csv"
+			file, _ := os.Create(fileName)
+			writer := csv.NewWriter(file)
+			defer writer.Flush()
+
+			header := []string{"ClusterName", "HostName", "Namespace", "PodName", "ContainerID",
+				"ContainerName", "Uid", "Type", "Source", "Operation", "Resource", "Data",
+				"StartTime", "LastUpdatedTime", "Result", "Total"}
+			_ = writer.Write(header)
+
+			for _, logs := range systemLogs {
+				var row []string
+				row = append(row, logs.ClusterName, logs.HostName, logs.Namespace, logs.PodName, logs.ContainerID,
+					logs.ContainerName, fmt.Sprint(logs.Uid), logs.Type, logs.Source, logs.Operation, logs.Resource, logs.Data,
+					fmt.Sprint(logs.StartTime), fmt.Sprint(logs.UpdateTime), logs.Result, fmt.Sprint(logs.Total))
+				_ = writer.Write(row)
+			}
+			return nil
+		}
+		for _, log := range systemLogs {
 			output, _ := json.Marshal(log)
 			fmt.Println(string(output))
 			fmt.Println()
@@ -57,4 +112,8 @@ func init() {
 	sysCmd.Flags().StringVarP(&sysFilters.Resource, "resource", "r", "", "fetch log based on resource")
 	sysCmd.Flags().StringArrayVarP(&sysFilters.Container, "container", "c", nil, "fetch logs based on container Name")
 	sysCmd.Flags().StringVar(&sysFilters.Since, "since", "", "fetch log based on time {1d/1h/1m/1s}")
+
+	// sysCmd.AddCommand(exportSys)
+	sysCmd.Flags().BoolVar(&export.json, "json", false, "export file in Json format")
+	sysCmd.Flags().BoolVar(&export.csv, "csv", false, "export file in CSV format")
 }

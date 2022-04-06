@@ -35,33 +35,33 @@ func connectClient() (aggregator.AggregatorClient, error) {
 }
 
 //GetSystemLogs - Fetch system logs
-func GetSystemLogs(options aggregator.SystemLogsRequest) (*aggregator.SystemLogsResponse, error) {
+func GetSystemLogs(options aggregator.SystemLogsRequest) (aggregator.Aggregator_FetchSystemLogsClient, error) {
 
 	//Connect grpc client
 	client, err := connectClient()
 	if err != nil {
-		return &aggregator.SystemLogsResponse{}, err
+		return nil, err
 	}
 	//Fetch System Logs
 	response, err := client.FetchSystemLogs(context.Background(), &options)
 	if err != nil {
-		return &aggregator.SystemLogsResponse{}, err
+		return nil, err
 	}
 	return response, nil
 }
 
 //GetNetworkLogs - Fetch network logs
-func GetNetworkLogs(options aggregator.NetworkLogsRequest) (*aggregator.NetworkLogsResponse, error) {
+func GetNetworkLogs(options aggregator.NetworkLogsRequest) (aggregator.Aggregator_FetchNetworkLogsClient, error) {
 
 	//Connect grpc client
 	client, err := connectClient()
 	if err != nil {
-		return &aggregator.NetworkLogsResponse{}, err
+		return nil, err
 	}
 	//Fetch Network Logs
 	response, err := client.FetchNetworkLogs(context.Background(), &options)
 	if err != nil {
-		return &aggregator.NetworkLogsResponse{}, err
+		return nil, err
 	}
 	return response, nil
 }
