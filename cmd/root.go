@@ -3,7 +3,7 @@ package cmd
 import "github.com/spf13/cobra"
 
 var rootCmd = &cobra.Command{
-	Use:   "knox",
+	Use:   "accuknox",
 	Short: "A CLI Utility to help manage Observability",
 	Long: `CLI Utility to help manage Observability
 	

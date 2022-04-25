@@ -18,9 +18,9 @@ type Options struct {
 }
 
 func connectClient() (aggregator.AggregatorClient, error) {
-	gRPC := "localhost:9089"
+	gRPC := "localhost:8089"
 
-	if val, ok := os.LookupEnv("KUBEARMOR_SERVICE"); ok {
+	if val, ok := os.LookupEnv("OBSERVABILITY_SERVICE"); ok {
 		gRPC = val
 	}
 	var client aggregator.AggregatorClient
