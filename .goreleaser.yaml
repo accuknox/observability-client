@@ -1,5 +1,6 @@
 project_name: accuknox
-## go mod details
+
+## go mod configurations
 gomod:
     proxy: true
     env:
