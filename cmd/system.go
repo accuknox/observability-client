@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/accuknox/observability-client/get"
+	"github.com/accuknox/observability-client/output"
 	"github.com/accuknox/observability/src/proto/aggregator"
 	"github.com/spf13/cobra"
 )
@@ -89,12 +90,27 @@ var sysCmd = &cobra.Command{
 			}
 			return nil
 		}
-		for _, log := range systemLogs {
-			output, _ := json.Marshal(log)
-			fmt.Println(string(output))
-			fmt.Println()
+
+		// for _, log := range systemLogs {
+		// 	output, _ := json.Marshal(log)
+		// 	fmt.Println(string(output))
+		// 	fmt.Println()
+		// }
+
+		// headerFmt := color.New(color.FgGreen, color.Underline).SprintfFunc()
+		// columnFmt := color.New(color.FgYellow).SprintfFunc()
+		tbl := output.New("HOST-NAME", "NAMESPACE", "POD-NAME", "OPERATION", "RESOURCE",
+			"LAST_UPDATED", "STATUS")
+		// tbl.WithHeaderFormatter(headerFmt)
+		// tbl.WithFirstColumnFormatter(columnFmt)
+
+		for _, logs := range systemLogs {
+
+			tbl.AddRow(logs.HostName, logs.Namespace, logs.PodName, logs.Operation, logs.Resource,
+				time.Unix(logs.UpdateTime, 0).Local(), logs.Result)
 		}
 
+		tbl.Print()
 		return nil
 	},
 }

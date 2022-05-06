@@ -10,6 +10,7 @@ import (
 	"time"
 
 	"github.com/accuknox/observability-client/get"
+	"github.com/accuknox/observability-client/output"
 	"github.com/accuknox/observability/src/proto/aggregator"
 	"github.com/spf13/cobra"
 )
@@ -100,12 +101,44 @@ var netCmd = &cobra.Command{
 			return nil
 		}
 
-		for _, log := range networkLogs {
-			output, _ := json.Marshal(log)
-			fmt.Println(string(output))
-			fmt.Println()
+		// for _, log := range networkLogs {
+		// 	output, _ := json.Marshal(log)
+		// 	fmt.Println(string(output))
+		// 	fmt.Println()
+		// }
+		tbl := output.New("SOURCE POD NAME", "SOURCE IP", "DESTINATION IP", "TRAFFIC DIRECTION", "PROTOCOL", "LAST OBSERVED", "STATUS")
+		// tbl.WithFirstColumnFormatter(columnFmt)
+
+		for _, logs := range networkLogs {
+			var status, protocol string
+			//Check Status
+			switch logs.Verdict {
+			case "FORWARDED":
+				status = "ALLOW"
+			default:
+				status = "DENY"
+			}
+			//Check Protocol
+			if logs.L4TcpSourcePort != 0 {
+				protocol = "TCP"
+				// field = fmt.Sprint(logs.L4TcpSourcePort) + " -> " + fmt.Sprint(logs.L4TcpDestinationPort)
+			} else if logs.L4UdpSourcePort != 0 {
+				protocol = "UDP"
+				// field = fmt.Sprint(logs.L4UdpSourcePort) + " -> " + fmt.Sprint(logs.L4UdpDestinationPort)
+			} else if logs.L4Icmpv4Type != 0 {
+				protocol = "ICMPv4"
+			} else if logs.L4Icmpv6Type != 0 {
+				protocol = "ICMPv6"
+			} else if logs.L7DnsCnames != "" {
+				protocol = "DNS"
+			} else if logs.L7HttpCode != 0 {
+				protocol = "HTTP"
+			}
+
+			tbl.AddRow(logs.SourcePodName, logs.IpSource, logs.IpDestination, logs.TrafficDirection, protocol, time.Unix(logs.UpdatedTime, 0).Local(), status)
 		}
 
+		tbl.Print()
 		return nil
 	},
 }
