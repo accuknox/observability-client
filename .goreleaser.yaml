@@ -17,10 +17,6 @@ gomod:
   # Sets the `-mod` flag value.
   # Defaults to empty.
   mod: mod
-
-  # Which Go binary to use.
-  # Defaults to `go`.
-  gobinary: go1.17
     
 builds:
   - binary: accuknox
