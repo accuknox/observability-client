@@ -6,7 +6,6 @@ gomod:
   # Notice: for this to work your `build.main` must be a package, not a `.go` file.
   #
   # Default is false.
-  proxy: true
 
   # If proxy is true, use these environment variables when running `go mod` commands (namely, `go mod tidy`).
   # Defaults to `os.Environ()`.
