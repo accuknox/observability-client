@@ -1,12 +1,12 @@
 project_name: accuknox
 
-## go mod configurations
-# gomod:
-#     env:
-#       - GOPROXY=https://proxy.golang.org,direct
-#       - GOPRIVATE="github.com/accuknox/*"
-#     mod: mod
-
+gomod:
+    env:
+      - GOPROXY=https://proxy.golang.org,direct
+      - GOSUMDB=sum.golang.org
+      - GOPRIVATE="github.com/accuknox/*"
+    mod: mod
+    
 builds:
   - binary: accuknox
     goos:
