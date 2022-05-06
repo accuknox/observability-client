@@ -14,13 +14,7 @@ gomod:
     - GOPROXY=https://proxy.golang.org,direct
     - GOSUMDB=sum.golang.org
     - GOPRIVATE=github.com/accuknox/*
-    - GO111MODULE=on
-  before:
-   hooks:
-    - go mod download
-
-  # Sets the `-mod` flag value.
-  # Defaults to empty.
+  
   mod: mod
     
 builds:
