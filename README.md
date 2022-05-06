@@ -1,4 +1,4 @@
-# observability-client
+# Observability Client
 
 ## Installation
 
