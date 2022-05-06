@@ -2,7 +2,6 @@ project_name: accuknox
 
 ## go mod configurations
 gomod:
-    proxy: true
     env:
       - GOPRIVATE="github.com/accuknox/*"
     mod: mod
