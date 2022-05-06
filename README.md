@@ -18,21 +18,6 @@ sudo curl https://storage.googleapis.com/kobserve/latest/linux/amd64/accuknox -o
 sudo curl https://storage.googleapis.com/kobserve/latest/linux/arm64/accuknox -o accuknox && sudo chmod a+x accuknox | sudo mv accuknox /usr/bin/
 ```
 
-### Darwin
-
-##### amd64
-
-```bash
-sudo curl https://storage.googleapis.com/kobserve/latest/darwin/amd64/accuknox -o accuknox && sudo chmod a+x accuknox | sudo mv accuknox /usr/bin/
-```
-
-##### arm64
-
-```bash
-sudo curl https://storage.googleapis.com/kobserve/latest/darwin/arm64/accuknox -o accuknox && sudo chmod a+x accuknox | sudo mv accuknox /usr/bin/
-```
-
-
 ## Usage
 
 ```
