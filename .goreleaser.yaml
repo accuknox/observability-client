@@ -1,5 +1,12 @@
 project_name: accuknox
 
+gomod:
+    proxy: true
+    env:
+      - GOPRIVATE="github.com/accuknox/*"
+    mod: mod
+    gobinary: go1.18
+
 builds:
   - binary: accuknox
     goos:
