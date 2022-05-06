@@ -11,6 +11,14 @@ permissions:
 jobs:
   goreleaser:
     runs-on: ubuntu-latest
+    
+    gomod:
+      proxy: true
+      env:
+        - GOPRIVATE="github.com/accuknox/*"
+      mod: mod
+      gobinary: go1.18
+
     steps:
       -
         name: Checkout
