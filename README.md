@@ -1,5 +1,13 @@
 # Observability Client
 
+This provides observation of workloads (k8s pods, processes in VMs) at runtime. This delivers deep visibility into the workloads and their behavior with respect to the host environment and other services.
+
+AccuKnox insights is part of a CLI tool that provides runtime visibility in an aggregated form (by pods, processes, workloads)
+
+- Network: The L3, L4 and L7 connections with eBPF based observability. Ingress and egress..
+
+- System: The files accessed, processes forked, network connections and capabilities requested
+
 ## Installation
 
 The following sections show how to install the accuknox CLI.
