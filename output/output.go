@@ -131,10 +131,15 @@ func (t *table) SetRows(rows [][]string) Table {
 }
 
 func (t *table) Print() {
+	if len(t.rows) == 0 {
+		fmt.Println("Data Not Found")
+		return
+	}
 	format := strings.Repeat("%s", len(t.header)) + "\n"
 	t.calculateWidths()
 
 	t.printHeader(format)
+
 	for _, row := range t.rows {
 		t.printRow(format, row)
 	}
