@@ -1,0 +1,12 @@
+project_name: accuknox
+
+builds:
+  - binary: accuknox
+    goos:
+      - darwin
+      - linux
+    goarch:
+      - amd64
+      - arm64
+    env:
+      - CGO_ENABLED=0
