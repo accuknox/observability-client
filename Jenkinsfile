@@ -21,14 +21,13 @@ def uploadToGCS() {
       withCredentials([file(credentialsId: 'kobserve-cred', variable: 'GKE_KEY')]) {
             
             sh 'export GITHUB_TOKEN=81e576b2d447ff1600ea71975cd1b024e77dd58f'
+            sh 'echo $GITHUB_TOKEN'
         
             sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'
             
             sh 'goreleaser release --snapshot'
      
             sh "gcloud auth activate-service-account --key-file='$GKE_KEY'"
-            
-            sh 'echo $GITHUB_TOKEN'
         
             sh "gsutil dist/accuknox_linux_amd64_v1/accuknox gs://kobserve/test/linux/amd64/"
             
