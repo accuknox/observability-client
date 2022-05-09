@@ -21,6 +21,7 @@ def uploadToGCS() {
       sh 'echo $GITHUB_TOKEN'   
       sh 'go env -w GOPRIVATE="github.com/accuknox/*"'
       sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'   
+      sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
       sh 'go env'
       sh 'goreleaser release --snapshot' 
     
