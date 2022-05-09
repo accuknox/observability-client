@@ -6,7 +6,7 @@ AccuKnox insights is part of a CLI tool that provides runtime visibility in an a
 
 - Network: The L3, L4 and L7 connections with eBPF based observability. Ingress and egress..
 
-- System: The files accessed, processes forked, network connections and capabilities requested
+- System: The files accessed, processes forked and network connections requested
 
 ## Installation
 
