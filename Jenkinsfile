@@ -23,7 +23,7 @@ def uploadToGCS() {
 //             sh 'echo GITHUB_TOKEN=81e576b2d447ff1600ea71975cd1b024e77dd58f >> ~/.bash_profile'
 //             sh '. ~/.bash_profile'
 //             sh 'echo $GITHUB_TOKEN' 
-        
+            sh 'go env -w GOPRIVATE="github.com/accuknox/*"'
             sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'
             
             sh 'goreleaser release --snapshot'
