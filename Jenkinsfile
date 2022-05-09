@@ -6,7 +6,7 @@ pipeine {
     stage('Push to GCS') {
       steps {
         script {
-          uploadToGCS(data)
+          uploadToGCS()
         }
       }
     }
@@ -14,7 +14,7 @@ pipeine {
 }
 
 
-def uploadToGCS(def data) {
+def uploadToGCS() {
   
   docker.inside("gcr.io/mimetic-kit-294408/accuknox-images/gcloud-golang-goreleaser:1").inside('-u 0:0'){
        
