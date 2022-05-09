@@ -1,8 +1,6 @@
 pipeine {
   
-  agent {
-    label 'any'
-  }
+  agent any
   
   stages {
     stage('Push to GCS') {
