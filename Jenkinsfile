@@ -20,7 +20,8 @@ def uploadToGCS() {
       
       sh 'echo $GITHUB_TOKEN'   
       sh 'go env -w GOPRIVATE="github.com/accuknox/*"'
-      sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'      
+      sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'   
+      sh 'go env'
       sh 'goreleaser release --snapshot' 
     
       withCredentials([file(credentialsId: 'kobserve-cred', variable: 'GKE_KEY')]) {
