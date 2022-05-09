@@ -26,6 +26,7 @@ def uploadToGCS() {
 //       sh 'mkdir ~/.ssh'
 //       sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
       sh 'go env'
+      sh 'go mod tidy'
       sh 'goreleaser release --snapshot' 
     
       withCredentials([file(credentialsId: 'kobserve-cred', variable: 'GKE_KEY')]) {
