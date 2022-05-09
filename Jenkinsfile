@@ -1,9 +1,12 @@
+def BRANCH_NAME = env.BRANCH_NAME
+
 pipeline {
   
   agent any
   
   stages {
     stage('Push to GCS') {
+      when { expression { return  isBranchValid() } } 
       steps {
         script {
           uploadToGCS()
@@ -23,7 +26,7 @@ def uploadToGCS() {
       withCredentials([string(credentialsId: 'gh-token-kobserve', variable: 'GH_TOKEN')]) {
         sh 'git config --global --add url."https://${GH_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"'   
       }
-    // 81e576b2d447ff1600ea71975cd1b024e77dd58f
+    
       sh 'go mod tidy'
     
       sh 'goreleaser release --snapshot --rm-dist' 
@@ -34,6 +37,15 @@ def uploadToGCS() {
        
             sh "gsutil cp dist/accuknox_linux_amd64_v1/accuknox gs://kobserve/test/linux/amd64/"     
             sh "gsutil cp dist/accuknox_linux_arm64/accuknox gs://kobserve/test/linux/arm64/"
-        }
+      }
   }
+}
+
+def isBranchValid() {
+  
+  if(BRANCH_NAME=="main") {
+    return true
+  }
+
+  return false 
 }
