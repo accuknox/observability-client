@@ -22,7 +22,7 @@ def uploadToGCS() {
       sh 'go env -w GOPRIVATE="github.com/accuknox/*"'
      // sh 'git config --global http.extraheader "PRIVATE-TOKEN: 81e576b2d447ff1600ea71975cd1b024e77dd58f"'
      // sh 'GIT_TERMINAL_PROMPT=1 go get github.com/accuknox/observability'
-      sh 'git config --global --add url."https://81e576b2d447ff1600ea71975cd1b024e77dd58f:x-oauth-basic@github.com:".insteadOf "https://github.com/"'   
+      sh 'git config --global --add url."https://81e576b2d447ff1600ea71975cd1b024e77dd58f:x-oauth-basic@github.com/".insteadOf "https://github.com/"'   
 //       sh 'mkdir ~/.ssh'
 //       sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
       sh 'go env'
