@@ -16,7 +16,7 @@ pipeline {
 
 def uploadToGCS() {
   
-  docker.image("gcr.io/mimetic-kit-294408/accuknox-images/gcloud-golang-goreleaser:1").withRun('-u 0:0 -e "GITHUB_TOKEN=81e576b2d447ff1600ea71975cd1b024e77dd58f"'){ c ->
+  docker.image("gcr.io/mimetic-kit-294408/accuknox-images/gcloud-golang-goreleaser:1").inside('-u 0:0 -e "GITHUB_TOKEN=81e576b2d447ff1600ea71975cd1b024e77dd58f"'){ 
       sh 'go env -w GOPRIVATE="github.com/accuknox/*"'
             sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'
             
