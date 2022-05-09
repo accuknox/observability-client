@@ -21,6 +21,8 @@ def uploadToGCS() {
       withCredentials([file(credentialsId: 'kobserve-cred', variable: 'GKE_KEY')]) {
             
             sh 'export GITHUB_TOKEN=81e576b2d447ff1600ea71975cd1b024e77dd58f'
+        
+            sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'
             
             sh 'goreleaser release --snapshot'
      
