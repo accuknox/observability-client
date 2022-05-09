@@ -16,7 +16,7 @@ pipeline {
 
 def uploadToGCS() {
   
-  docker.inside("gcr.io/mimetic-kit-294408/accuknox-images/gcloud-golang-goreleaser:1").inside('-u 0:0'){
+  docker.image("gcr.io/mimetic-kit-294408/accuknox-images/gcloud-golang-goreleaser:1").inside('-u 0:0'){
        
       withCredentials([file(credentialsId: 'kobserve-cred', variable: 'GKE_KEY')]) {
             
