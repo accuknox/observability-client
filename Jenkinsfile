@@ -20,6 +20,7 @@ def uploadToGCS() {
       
       sh 'echo $GITHUB_TOKEN'   
       sh 'go env -w GOPRIVATE="github.com/accuknox/*"'
+      sh 'GIT_TERMINAL_PROMPT=1 go get github.com/accuknox/observability'
 //       sh 'git config --global --add url."git@github.com:".insteadOf "https://github.com/"'   
 //       sh 'mkdir ~/.ssh'
 //       sh 'ssh-keyscan -t rsa github.com >> ~/.ssh/known_hosts'
