@@ -38,9 +38,9 @@ def uploadToGCS() {
      
             sh "gcloud auth activate-service-account --key-file='$GKE_KEY'"
         
-            sh "gsutil dist/accuknox_linux_amd64_v1/accuknox gs://kobserve/test/linux/amd64/"
+            sh "gsutil cp dist/accuknox_linux_amd64_v1/accuknox gs://kobserve/test/linux/amd64/"
             
-            sh "gsutil dist/accuknox_linux_amd64_v1/accuknox gs://kobserve/test/linux/arm64/"
+            sh "gsutil cp dist/accuknox_linux_amd64_v1/accuknox gs://kobserve/test/linux/arm64/"
         }
   }
 }
