@@ -31,7 +31,7 @@ type WidthFunc func(string) int
 
 type Table interface {
 	WithHeaderFormatter(f Formatter) Table
-	WithFirstColumnFormatter(f Formatter) Table
+	WithLastColumnFormatter(f Formatter) Table
 	WithPadding(p int) Table
 	WithWriter(w io.Writer) Table
 	WithWidthFunc(f WidthFunc) Table
@@ -47,7 +47,7 @@ func New(columnHeaders ...interface{}) Table {
 	t.WithPadding(DefaultPadding)
 	t.WithWriter(DefaultWriter)
 	t.WithHeaderFormatter(DefaultHeaderFormatter)
-	t.WithFirstColumnFormatter(DefaultFirstColumnFormatter)
+	t.WithLastColumnFormatter(DefaultFirstColumnFormatter)
 	t.WithWidthFunc(DefaultWidthFunc)
 
 	for i, col := range columnHeaders {
@@ -58,11 +58,11 @@ func New(columnHeaders ...interface{}) Table {
 }
 
 type table struct {
-	FirstColumnFormatter Formatter
-	HeaderFormatter      Formatter
-	Padding              int
-	Writer               io.Writer
-	Width                WidthFunc
+	LastColumnFormatter Formatter
+	HeaderFormatter     Formatter
+	Padding             int
+	Writer              io.Writer
+	Width               WidthFunc
 
 	header []string
 	rows   [][]string
@@ -74,8 +74,8 @@ func (t *table) WithHeaderFormatter(f Formatter) Table {
 	return t
 }
 
-func (t *table) WithFirstColumnFormatter(f Formatter) Table {
-	t.FirstColumnFormatter = f
+func (t *table) WithLastColumnFormatter(f Formatter) Table {
+	t.LastColumnFormatter = f
 	return t
 }
 
@@ -132,7 +132,7 @@ func (t *table) SetRows(rows [][]string) Table {
 
 func (t *table) Print() {
 	if len(t.rows) == 0 {
-		fmt.Println("Data Not Found")
+		fmt.Println("No Data")
 		return
 	}
 	format := strings.Repeat("%s", len(t.header)) + "\n"
@@ -157,8 +157,9 @@ func (t *table) printHeader(format string) {
 
 func (t *table) printRow(format string, row []string) {
 	vals := t.applyWidths(row, t.widths)
-	if t.FirstColumnFormatter != nil {
-		vals[0] = t.FirstColumnFormatter("%s", vals[0])
+	n := len(row) - 1
+	if t.LastColumnFormatter != nil {
+		vals[n] = t.LastColumnFormatter("%s", vals[n])
 	}
 
 	fmt.Fprintf(t.Writer, format, vals...)
