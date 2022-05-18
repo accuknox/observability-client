@@ -27,7 +27,7 @@ def uploadToGCS() {
         sh 'git config --global --add url."https://${GH_TOKEN}:x-oauth-basic@github.com/".insteadOf "https://github.com/"'   
       }
     
-      sh 'go mod tidy'
+      sh 'go mod tidy -compat=1.17'
     
       sh 'goreleaser release --snapshot --rm-dist' 
     

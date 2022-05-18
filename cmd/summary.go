@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"time"
 
 	"github.com/accuknox/observability-client/output"
 	sum "github.com/accuknox/observability-client/summary"
@@ -31,8 +32,6 @@ var sumCmd = &cobra.Command{
 			return err
 		}
 		headerFmt := color.New(color.Underline).SprintfFunc()
-		columnFmt := color.New(color.FgGreen).SprintfFunc()
-		count := 1
 		for {
 			res, err := stream.Recv()
 			if err == io.EOF {
@@ -41,59 +40,59 @@ var sumCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			fmt.Println("\n\n***************** Row : ", count, " *****************")
+			fmt.Println("\n\n**********************************************************************")
 			fmt.Println("\nPod Name : ", res.PodDetail)
 			fmt.Println("\nNamespace : ", res.Namespace)
 			//Print List of Processes
 			fmt.Println("\nList of Processes (" + fmt.Sprint(len(res.ListOfProcess)) + ") :\n")
-			tbl := output.New("SOURCE", "DESTINATION", "COUNT", "STATUS")
+			tbl := output.New("SOURCE", "DESTINATION", "COUNT", "LAST UPDATED TIME", "STATUS")
 			tbl.WithHeaderFormatter(headerFmt)
-			tbl.WithLastColumnFormatter(columnFmt)
 			for _, process := range res.ListOfProcess {
 				for _, source := range process.ListOfDestination {
-					tbl.AddRow(process.Source, source.Destination, source.Count, source.Status)
+					tbl.AddRow(process.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), source.Status)
 				}
 			}
 			tbl.Print()
 
 			//Print List of File System
 			fmt.Println("\nList of File-system accesses (" + fmt.Sprint(len(res.ListOfFile)) + ") :\n")
-			tbl = output.New("SOURCE", "DESTINATION", "COUNT", "STATUS")
-			tbl.WithHeaderFormatter(headerFmt).WithLastColumnFormatter(columnFmt)
+			tbl = output.New("SOURCE", "DESTINATION", "COUNT", "LAST UPDATED TIME", "STATUS")
+			tbl.WithHeaderFormatter(headerFmt)
 			for _, file := range res.ListOfFile {
 				for _, source := range file.ListOfDestination {
-					tbl.AddRow(file.Source, source.Destination, source.Count, source.Status)
+					tbl.AddRow(file.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), source.Status)
 				}
 			}
 			tbl.Print()
 
 			//Print List of Network Connection
 			fmt.Println("\nList of Network connections (" + fmt.Sprint(len(res.ListOfNetwork)) + ") :\n")
-			tbl = output.New("SOURCE", "Protocol", "COUNT", "STATUS")
-			tbl.WithHeaderFormatter(headerFmt).WithLastColumnFormatter(columnFmt)
+			tbl = output.New("SOURCE", "Protocol", "COUNT", "LAST UPDATED TIME", "STATUS")
+			tbl.WithHeaderFormatter(headerFmt)
 			for _, network := range res.ListOfNetwork {
 				for _, source := range network.ListOfDestination {
-					tbl.AddRow(network.Source, source.Destination, source.Count, source.Status)
+					tbl.AddRow(network.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), source.Status)
 				}
 			}
 			tbl.Print()
 
 			//Print Ingress Connection
 			fmt.Printf("\nIngress Connection :\n\n")
-			tbl = output.New("VISIBILITY", "COUNT", "STATUS")
-			tbl.WithHeaderFormatter(headerFmt).WithLastColumnFormatter(columnFmt)
-			tbl.AddRow("Within Cluster", res.Ingress.In, "ALLOW")
-			tbl.AddRow("Outside Cluster", res.Ingress.Out, "ALLOW")
+			tbl = output.New("DESTINATION LABEL", "DESTINATION NAMESPACE", "PROTOCOL", "PORT", "COUNT", "LAST UPDATED TIME", "STATUS")
+			tbl.WithHeaderFormatter(headerFmt)
+			for _, ingress := range res.Ingress {
+				tbl.AddRow(ingress.DestinationLabels, ingress.DestinationNamespace, ingress.Protocol, ingress.Port, ingress.Count, time.Unix(ingress.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), ingress.Status)
+			}
 			tbl.Print()
 
 			//Print Egress Connection
 			fmt.Printf("\nEgress Connection : \n\n")
-			tbl = output.New("VISIBILITY", "COUNT", "STATUS")
-			tbl.WithHeaderFormatter(headerFmt).WithLastColumnFormatter(columnFmt)
-			tbl.AddRow("Within Cluster", res.Egress.In, "ALLOW")
-			tbl.AddRow("Outside Cluster", res.Egress.Out, "ALLOW")
+			tbl = output.New("DESTINATION LABEL", "DESTINATION NAMESPACE", "PROTOCOL", "PORT", "COUNT", "LAST UPDATED TIME", "STATUS")
+			tbl.WithHeaderFormatter(headerFmt)
+			for _, egress := range res.Egress {
+				tbl.AddRow(egress.DestinationLabels, egress.DestinationNamespace, egress.Protocol, egress.Port, egress.Count, time.Unix(egress.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), egress.Status)
+			}
 			tbl.Print()
-			count++
 		}
 		return nil
 	},

@@ -6,6 +6,8 @@ import (
 	"os"
 	"strings"
 	"unicode/utf8"
+
+	"github.com/fatih/color"
 )
 
 var (
@@ -18,8 +20,12 @@ var (
 	// DefaultHeaderFormatter specifies the default Formatter for the table header.
 	DefaultHeaderFormatter Formatter
 
-	// DefaultFirstColumnFormatter specifies the default Formatter for the first column cells.
-	DefaultFirstColumnFormatter Formatter
+	// DefaultAllowFormatter specifies the default Formatter for the allow cells.
+	DefaultAllowFormatter = color.New(color.FgGreen).SprintfFunc()
+	// DefaultDenyFormatter specifies the default Formatter for the deny cells.
+	DefaultDenyFormatter = color.New(color.FgRed).SprintfFunc()
+	// DefaultAuditFormatter specifies the default Formatter for the audit cells.
+	DefaultAuditFormatter = color.New(color.FgYellow).SprintfFunc()
 
 	// DefaultWidthFunc specifies the default WidthFunc for calculating column widths
 	DefaultWidthFunc WidthFunc = utf8.RuneCountInString
@@ -31,7 +37,9 @@ type WidthFunc func(string) int
 
 type Table interface {
 	WithHeaderFormatter(f Formatter) Table
-	WithLastColumnFormatter(f Formatter) Table
+	WithAllowFormatter(f Formatter) Table
+	WithDenyFormatter(f Formatter) Table
+	WithAuditFormatter(f Formatter) Table
 	WithPadding(p int) Table
 	WithWriter(w io.Writer) Table
 	WithWidthFunc(f WidthFunc) Table
@@ -47,7 +55,9 @@ func New(columnHeaders ...interface{}) Table {
 	t.WithPadding(DefaultPadding)
 	t.WithWriter(DefaultWriter)
 	t.WithHeaderFormatter(DefaultHeaderFormatter)
-	t.WithLastColumnFormatter(DefaultFirstColumnFormatter)
+	t.WithAllowFormatter(DefaultAllowFormatter)
+	t.WithDenyFormatter(DefaultDenyFormatter)
+	t.WithAuditFormatter(DefaultAuditFormatter)
 	t.WithWidthFunc(DefaultWidthFunc)
 
 	for i, col := range columnHeaders {
@@ -58,11 +68,13 @@ func New(columnHeaders ...interface{}) Table {
 }
 
 type table struct {
-	LastColumnFormatter Formatter
-	HeaderFormatter     Formatter
-	Padding             int
-	Writer              io.Writer
-	Width               WidthFunc
+	AllowFormatter  Formatter
+	DenyFormatter   Formatter
+	AuditFormatter  Formatter
+	HeaderFormatter Formatter
+	Padding         int
+	Writer          io.Writer
+	Width           WidthFunc
 
 	header []string
 	rows   [][]string
@@ -74,8 +86,18 @@ func (t *table) WithHeaderFormatter(f Formatter) Table {
 	return t
 }
 
-func (t *table) WithLastColumnFormatter(f Formatter) Table {
-	t.LastColumnFormatter = f
+func (t *table) WithAllowFormatter(f Formatter) Table {
+	t.AllowFormatter = f
+	return t
+}
+
+func (t *table) WithDenyFormatter(f Formatter) Table {
+	t.DenyFormatter = f
+	return t
+}
+
+func (t *table) WithAuditFormatter(f Formatter) Table {
+	t.AuditFormatter = f
 	return t
 }
 
@@ -157,10 +179,6 @@ func (t *table) printHeader(format string) {
 
 func (t *table) printRow(format string, row []string) {
 	vals := t.applyWidths(row, t.widths)
-	n := len(row) - 1
-	if t.LastColumnFormatter != nil {
-		vals[n] = t.LastColumnFormatter("%s", vals[n])
-	}
 
 	fmt.Fprintf(t.Writer, format, vals...)
 }
@@ -184,7 +202,18 @@ func (t *table) calculateWidths() {
 
 func (t *table) applyWidths(row []string, widths []int) []interface{} {
 	out := make([]interface{}, len(row))
+	allow := color.New(color.FgGreen).SprintfFunc()
+	deny := color.New(color.FgRed).SprintfFunc()
+	audit := color.New(color.FgYellow).SprintfFunc()
 	for i, s := range row {
+		switch s {
+		case "ALLOW":
+			s = allow(s)
+		case "DENY":
+			s = deny(s)
+		case "AUDIT":
+			s = audit(s)
+		}
 		out[i] = s + t.lenOffset(s, widths[i])
 	}
 	return out
