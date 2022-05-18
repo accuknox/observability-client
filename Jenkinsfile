@@ -19,7 +19,7 @@ pipeline {
 
 def uploadToGCS() {
   
-  docker.image("gcr.io/mimetic-kit-294408/accuknox-images/gcloud-golang-goreleaser:2").inside('-u 0:0'){ 
+  docker.image("gcr.io/mimetic-kit-294408/accuknox-images/gcloud-golang-goreleaser:3").inside('-u 0:0'){ 
       
       sh 'go env -w GOPRIVATE="github.com/accuknox/*"'
       
