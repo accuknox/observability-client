@@ -76,8 +76,8 @@ var sumCmd = &cobra.Command{
 			}
 			tbl.Print()
 
-			//Print Ingress Connection
-			fmt.Printf("\nIngress Connection :\n\n")
+			//Print Ingress Connections
+			fmt.Printf("\nIngress Connections :\n\n")
 			tbl = output.New("DESTINATION LABEL", "DESTINATION NAMESPACE", "PROTOCOL", "PORT", "COUNT", "LAST UPDATED TIME", "STATUS")
 			tbl.WithHeaderFormatter(headerFmt)
 			for _, ingress := range res.Ingress {
@@ -85,8 +85,8 @@ var sumCmd = &cobra.Command{
 			}
 			tbl.Print()
 
-			//Print Egress Connection
-			fmt.Printf("\nEgress Connection : \n\n")
+			//Print Egress Connections
+			fmt.Printf("\nEgress Connections : \n\n")
 			tbl = output.New("DESTINATION LABEL", "DESTINATION NAMESPACE", "PROTOCOL", "PORT", "COUNT", "LAST UPDATED TIME", "STATUS")
 			tbl.WithHeaderFormatter(headerFmt)
 			for _, egress := range res.Egress {
