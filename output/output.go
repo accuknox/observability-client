@@ -209,7 +209,7 @@ func (t *table) applyWidths(row []string, widths []int) []interface{} {
 		switch s {
 		case "ALLOW":
 			s = allow(s)
-		case "DENY":
+		case "DENY", "BLOCK":
 			s = deny(s)
 		case "AUDIT":
 			s = audit(s)
