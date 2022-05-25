@@ -31,6 +31,7 @@ var sumCmd = &cobra.Command{
 		if err != nil {
 			return err
 		}
+
 		headerFmt := color.New(color.Underline).SprintfFunc()
 		for {
 			res, err := stream.Recv()
@@ -40,6 +41,7 @@ var sumCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
+			fmt.Println("res : ", res.ListOfFile)
 			fmt.Println("\n\n**********************************************************************")
 			fmt.Println("\nPod Name : ", res.PodDetail)
 			fmt.Println("\nNamespace : ", res.Namespace)
