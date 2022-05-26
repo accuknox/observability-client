@@ -41,7 +41,6 @@ var sumCmd = &cobra.Command{
 			if err != nil {
 				return err
 			}
-			fmt.Println("res : ", res.ListOfFile)
 			fmt.Println("\n\n**********************************************************************")
 			fmt.Println("\nPod Name : ", res.PodDetail)
 			fmt.Println("\nNamespace : ", res.Namespace)
