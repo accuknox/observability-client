@@ -3,7 +3,7 @@ module github.com/accuknox/observability-client
 go 1.17
 
 require (
-	github.com/accuknox/observability v0.0.0-20220526042104-a4a7ecf16c34
+	github.com/accuknox/observability v0.0.0-20220526094152-ea3017ca75cb
 	github.com/fatih/color v1.13.0
 	github.com/rs/zerolog v1.26.1
 	github.com/spf13/cobra v1.4.0
