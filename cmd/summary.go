@@ -3,6 +3,7 @@ package cmd
 import (
 	"fmt"
 	"io"
+	"strings"
 	"time"
 
 	"github.com/accuknox/observability-client/output"
@@ -50,7 +51,7 @@ var sumCmd = &cobra.Command{
 			tbl.WithHeaderFormatter(headerFmt)
 			for _, process := range res.ListOfProcess {
 				for _, source := range process.ListOfDestination {
-					tbl.AddRow(process.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), source.Status)
+					tbl.AddRow(process.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), strings.ToUpper(source.Status))
 				}
 			}
 			tbl.Print()
@@ -61,7 +62,7 @@ var sumCmd = &cobra.Command{
 			tbl.WithHeaderFormatter(headerFmt)
 			for _, file := range res.ListOfFile {
 				for _, source := range file.ListOfDestination {
-					tbl.AddRow(file.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), source.Status)
+					tbl.AddRow(file.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), strings.ToUpper(source.Status))
 				}
 			}
 			tbl.Print()
@@ -72,7 +73,7 @@ var sumCmd = &cobra.Command{
 			tbl.WithHeaderFormatter(headerFmt)
 			for _, network := range res.ListOfNetwork {
 				for _, source := range network.ListOfDestination {
-					tbl.AddRow(network.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), source.Status)
+					tbl.AddRow(network.Source, source.Destination, source.Count, time.Unix(source.LastUpdatedTime, 0).Format("1-02-2006 15:04:05"), strings.ToUpper(source.Status))
 				}
 			}
 			tbl.Print()
